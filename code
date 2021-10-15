@@ -1,0 +1,175 @@
+// INCLUDE LIBARIES //
+#include <avr/io.h>
+#include <stdio.h>
+#include <util/delay.h>
+#include "h_bridge.h"
+#include "servo.h"
+
+// LED DEFINE //
+#define stoplicht1 PH3
+#define stoplicht2 PH4
+#define vaarlicht1 PH5
+#define vaarlicht2 PH6
+
+// KNOPPPEN DEFINE //
+#define startknop PE1
+#define noodknop  PE4
+
+// SENSOR INFRAROOD & BUZZER//
+#define sensor PF1
+#define buzzer PB4
+
+
+
+void init(void)
+{
+	init_h_bridge();
+	init_servo();
+}
+
+
+void motor()
+  {
+
+
+
+  init_h_bridge();
+
+
+       for (int i = 0; i < 35; i++) // 0-35 motor ->
+       {
+           h_bridge_set_percentage(i);
+           _delay_ms(100);
+       }
+       for (int i = 0; i <= 100; i)  // stopt motor bij 100
+       {
+           h_bridge_set_percentage(i);
+             _delay_ms(100);
+
+       }
+       return(0);
+
+   }
+
+   void motor_uit()
+   {
+
+
+  init_h_bridge();
+       for (int i = 0; i > -35; i--) // 0-35 motor <-
+           {
+           h_bridge_set_percentage(i);
+           _delay_ms(100);
+          }
+           for (int i = 0; i <= 100; i) // stopt motor bij -100
+       {
+           h_bridge_set_percentage(i);
+             _delay_ms(1000);
+       }
+       return(0);
+
+   }
+
+void serv1uit()
+{
+init ();
+
+		for (int i = -100 ; i <= 100 ; i+=1)
+		{
+			servo1_set_percentage(i);
+			_delay_ms (50);
+		}
+		return(0);
+}
+void serv1aan()
+{
+init ();
+
+		for (int i = 100 ; i >= -100 ; i-=1)
+		{
+			servo1_set_percentage(i);
+			_delay_ms (50);
+		}
+		return(0);
+}
+void serv2uit()
+{
+init ();
+
+		for (int i = -100 ; i <= 100 ; i+=1)
+		{
+			servo2_set_percentage(i);
+			_delay_ms (50);
+		}
+		return(0);
+}
+void serv2aan()
+{
+init ();
+
+		for (int i = 100 ; i >= -100 ; i-=1)
+		{
+			servo2_set_percentage(i);
+			_delay_ms (50);
+		}
+		return(0);
+}
+void infrarood()
+{
+    while(1)
+     {
+              if ( (PINF & (1 << PINF1)) == (1 << PINF1) ) {
+                return(0);
+
+              } else {
+                {
+                    // doe niks
+                }
+              }
+     }
+}
+void buzzergeluid()
+{
+    while(4)
+    {
+    PORTB|=(1<<PB1);
+    _delay_ms(80);
+    PORTB&=~(1<<PB1);
+    _delay_ms(80);
+    }
+    return(0);
+}
+void lichten_aan()
+{
+    PORTH|=(1<<PH3);
+    PORTH|=(1<<PH4);
+    return(0);
+}
+void lichten_uit()
+{
+    PORTH|=(1<<PH3);
+    PORTH|=(1<<PH4);
+    return(0);
+}
+
+
+
+
+int main(void)
+{
+    infrarood();
+    lichten_aan();
+    buzzergeluid();
+    serv1aan();
+    serv2aan();
+    motor();
+    motor_uit();
+    buzzergeluid();
+    serv1uit();
+    serv2uit();
+    lichten_uit();
+    main();
+
+
+
+}
